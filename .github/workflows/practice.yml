@@ -1,0 +1,25 @@
+name: Practice 
+
+on:
+  push:
+    branches: [master]
+
+jobs: 
+  build-and-pr: 
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout code 
+        uses: actions/checkout@v3
+      
+      - name: Print Hello World 
+        run: echo "Hello World"
+
+      - name: Create a PR Example
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          branch: test-branch
+          base: main
+          title: "Practice PR"
+          body: "This is a test PR created via GitHub Actions"
+        
