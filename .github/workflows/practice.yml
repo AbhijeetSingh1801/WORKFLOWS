@@ -35,7 +35,7 @@ jobs:
             https://api.github.com/repos/${{ github.repository }}/pulls \
             -d '{
                   "title": "Auto-update stats",
-                  "head": "update-stats-branch",
+                  "head": "trial",
                   "base": "master",
                   "body": "This PR updates the stats automatically.",
                   "draft": false
