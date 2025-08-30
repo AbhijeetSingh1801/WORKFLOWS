@@ -1,25 +1,32 @@
-name: Practice 
-
+name: Auto PR Workflow
 on:
   push:
-    branches: [master]
+    branches:
+      - master   # Trigger when you push to main
+  workflow_dispatch:  # Manual trigger option
 
-jobs: 
-  build-and-pr: 
+jobs:
+  create-pull-request:
     runs-on: ubuntu-latest
-    steps: 
-      - name: Checkout code 
+    steps:
+      - name: Checkout repository
         uses: actions/checkout@v3
-      
-      - name: Print Hello World 
-        run: echo "Hello World"
 
-      - name: Create a PR Example
+      - name: Make changes (example)
+        run: |
+          echo "Auto update $(date)" >> stats.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stats.txt
+          git commit -m "Auto update stats" || echo "No changes to commit"
+
+      - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.PAT_TOKEN }}
-          branch: test-branch
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Auto update stats"
+          branch: update-stats-branch
           base: main
-          title: "Practice PR"
-          body: "This is a test PR created via GitHub Actions"
-        
+          title: "Auto-update stats"
+          body: "This PR updates the stats automatically."
+          delete-branch: false
