@@ -26,7 +26,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Auto update stats"
           branch: update-stats-branch
-          base: main
+          base: master
           title: "Auto-update stats"
           body: "This PR updates the stats automatically."
           delete-branch: false
