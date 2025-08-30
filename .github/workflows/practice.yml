@@ -1,8 +1,7 @@
 name: Auto PR Workflow
-on:
+on: 
   push:
-    branches:
-      - master   # Trigger when you push to main
+    branches: [trial]
   workflow_dispatch:  # Manual trigger option
 
 permissions:
@@ -27,7 +26,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           commit-message: "Auto update stats"
           branch: update-stats-branch
           base: master
