@@ -1,9 +1,8 @@
 name: Auto PR Workflow
-on:
+on: 
   push:
-    branches:
-      - master   # Trigger when you push to main
-  workflow_dispatch:  # Manual trigger option
+    branches: ['*']
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -23,14 +22,24 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add stats.txt
           git commit -m "Auto update stats" || echo "No changes to commit"
+          # Pull latest changes from the branch to avoid conflicts
+          git fetch origin ${{ github.ref_name }}
+          git reset --hard origin/${{ github.ref_name }}
+          git push origin HEAD:${{ github.ref_name }} --force
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Auto update stats"
-          branch: update-stats-branch
-          base: master
-          title: "Auto-update stats"
-          body: "This PR updates the stats automatically."
-          delete-branch: false
+      - name: Create Pull Request via curl
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{ github.repository }}/pulls \
+            -d '{
+                  "title": "Auto-update stats",
+                  "head": "'"${GITHUB_REF_NAME}"'",
+                  "base": "master",
+                  "body": "This PR updates the stats automatically.",
+                  "draft": false
+                }'
